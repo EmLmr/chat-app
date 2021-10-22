@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TextInput, Button } from "react-native";
 
+//the start/homepage component
 export default class Start extends React.Component {
     constructor(props) {
         super(props);

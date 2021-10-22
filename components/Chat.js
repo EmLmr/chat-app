@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 
+//the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
     render() {
         let name = this.props.route.params.name;
