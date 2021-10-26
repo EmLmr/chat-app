@@ -10,7 +10,7 @@ export default class Chat extends React.Component {
 
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text>Hello {name}!</Text>
+                <Text>Hello, {name}!</Text>
             </View>
         );
     }

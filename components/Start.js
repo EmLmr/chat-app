@@ -1,5 +1,15 @@
 import React from "react";
-import { View, TextInput, Text, Alert, ImageBackground, Image, StyleSheet } from "react-native";
+import {
+    View,
+    Button,
+    TextInput,
+    Text,
+    Alert,
+    ImageBackground,
+    Image,
+    StyleSheet,
+    TouchableOpacity,
+} from "react-native";
 
 //variables holding the background image and user icon
 const background = require("../assets/background-img.png");
@@ -25,7 +35,7 @@ export default class Start extends React.Component {
 
     render() {
         return (
-            <ImageBackground style={styles.imgBackground} resizeMode="cover" source={background}>
+            <ImageBackground style={styles.bgImage} resizeMode="cover" source={background}>
                 <View style={styles.container}>
                     <Text style={styles.title}>Welcome!</Text>
 
@@ -40,6 +50,20 @@ export default class Start extends React.Component {
                                 placeholderTextColor="#757083"
                                 opacity="0.5"
                             />
+                        </View>
+
+                        {/*button to start chatting*/}
+                        <View>
+                            <TouchableOpacity
+                                onPress={() => this.goToChat(this.state.name)}
+                                style={styles.button}
+                                accessible={true}
+                                accessibilityLabel="Go to chat"
+                                accessibilityHint="Takes you to the chat screen."
+                                accessibilityRole="button"
+                            >
+                                <Text style={styles.buttonText}>Start Chatting</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -63,7 +87,7 @@ const styles = StyleSheet.create({
         top: 100,
     },
 
-    imgBackground: {
+    bgImage: {
         width: "100%",
         height: "100%",
         flex: 1,
@@ -99,5 +123,23 @@ const styles = StyleSheet.create({
         fontWeight: "300",
         paddingLeft: 45,
         borderRadius: 10,
+    },
+
+    button: {
+        flex: 1,
+        position: "absolute",
+        bottom: 25,
+        alignSelf: "center",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#757083",
+        width: "88%",
+        height: 60,
+        borderRadius: 10,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: "600",
+        color: "#fff",
     },
 });
