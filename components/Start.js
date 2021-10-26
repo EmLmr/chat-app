@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, Button } from "react-native";
+import { View, TextInput, Button, Alert } from "react-native";
 
 //the start/homepage component
 export default class Start extends React.Component {
@@ -8,6 +8,17 @@ export default class Start extends React.Component {
         super(props);
         this.state = { name: "" };
     }
+
+    // Check for username
+    goToChat = (name) => {
+        if (name == "") {
+            return Alert.alert("Please enter your name!");
+        }
+        this.props.navigation.navigate("Chat", {
+            name: this.state.name,
+        });
+    };
+
     render() {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -18,10 +29,7 @@ export default class Start extends React.Component {
                     placeholder="Type your name"
                 />
                 {/*will open the Chat screen + pass the user input (name) as props to appear on the Chat screen*/}
-                <Button
-                    title="Go to Chat"
-                    onPress={() => this.props.navigation.navigate("Chat", { name: this.state.name })}
-                />
+                <Button title="Go to chat" onPress={() => this.goToChat(this.state.name)} />
             </View>
         );
     }
