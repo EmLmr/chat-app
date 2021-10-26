@@ -1,15 +1,5 @@
 import React from "react";
-import {
-    View,
-    Button,
-    TextInput,
-    Text,
-    Alert,
-    ImageBackground,
-    Image,
-    StyleSheet,
-    TouchableOpacity,
-} from "react-native";
+import { View, TextInput, Text, Alert, ImageBackground, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 //variables holding the background image and user icon
 const background = require("../assets/background-img.png");
@@ -20,16 +10,20 @@ export default class Start extends React.Component {
     //starting with an empty state so that user can enter their own name
     constructor(props) {
         super(props);
-        this.state = { name: "" };
+        this.state = {
+            name: "",
+            bgColor: "#757083",
+        };
     }
 
-    // Check for username
+    // check for username
     goToChat = (name) => {
         if (name == "") {
             return Alert.alert("Please enter your name!");
         }
         this.props.navigation.navigate("Chat", {
             name: this.state.name,
+            backgroundColor: this.state.bgColor,
         });
     };
 
@@ -38,8 +32,8 @@ export default class Start extends React.Component {
             <ImageBackground style={styles.bgImage} resizeMode="cover" source={background}>
                 <View style={styles.container}>
                     <Text style={styles.title}>Welcome!</Text>
-
                     <View style={styles.mainBox}>
+                        {/*where the user inputs their name*/}
                         <View style={styles.usernameBox}>
                             <Image style={styles.usernameIcon} source={icon} />
                             <TextInput
@@ -52,11 +46,46 @@ export default class Start extends React.Component {
                             />
                         </View>
 
+                        {/*where user picks a background color*/}
+                        <View style={styles.colorPaletteContainer}>
+                            <Text style={styles.colorPaletteText}>Choose Background Color:</Text>
+                            <View style={styles.colorPicker}>
+                                <TouchableOpacity
+                                    accessible={true}
+                                    accessibilityLabel="Black color"
+                                    accessibilityHint="To choose black as a background color for the chat."
+                                    style={[styles.colors, styles.black]}
+                                    onPress={() => this.setState({ bgColor: "#090C08" })}
+                                ></TouchableOpacity>
+                                <TouchableOpacity
+                                    accessible={true}
+                                    accessibilityLabel="Dark purple color"
+                                    accessibilityHint="To choose dark purple as a background color for the chat."
+                                    style={[styles.colors, styles.purple]}
+                                    onPress={() => this.setState({ bgColor: "#474056" })}
+                                ></TouchableOpacity>
+                                <TouchableOpacity
+                                    accessible={true}
+                                    accessibilityLabel="Dusty blue color"
+                                    accessibilityHint="To choose dusty blue as a background color for the chat."
+                                    style={[styles.colors, styles.blue]}
+                                    onPress={() => this.setState({ bgColor: "#8A95A5" })}
+                                ></TouchableOpacity>
+                                <TouchableOpacity
+                                    accessible={true}
+                                    accessibilityLabel="Dusty green color"
+                                    accessibilityHint="To choose dusty green as a background color for the chat."
+                                    style={[styles.colors, styles.green]}
+                                    onPress={() => this.setState({ bgColor: "#B9C6AE" })}
+                                ></TouchableOpacity>
+                            </View>
+                        </View>
+
                         {/*button to start chatting*/}
                         <View>
                             <TouchableOpacity
                                 onPress={() => this.goToChat(this.state.name)}
-                                style={styles.button}
+                                style={[styles.button, { backgroundColor: this.state.bgColor }]}
                                 accessible={true}
                                 accessibilityLabel="Go to chat"
                                 accessibilityHint="Takes you to the chat screen."
@@ -93,6 +122,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 
+    // white box on start screen
     mainBox: {
         width: "88%",
         height: 320,
@@ -100,7 +130,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "white",
-        borderRadius: 10,
     },
 
     usernameBox: {
@@ -122,7 +151,47 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "300",
         paddingLeft: 45,
-        borderRadius: 10,
+    },
+
+    colorPaletteContainer: {
+        position: "absolute",
+        alignSelf: "center",
+    },
+
+    colorPaletteText: {
+        fontSize: 16,
+        fontWeight: "300",
+        color: "#757083",
+    },
+
+    colorPicker: {
+        flexDirection: "row",
+        marginTop: 15,
+        width: "92%",
+    },
+
+    colors: {
+        width: 45,
+        height: 45,
+        marginRight: 20,
+        borderRadius: 45 / 2,
+        margin: 5,
+    },
+
+    black: {
+        backgroundColor: "#090C08",
+    },
+
+    purple: {
+        backgroundColor: "#474056",
+    },
+
+    blue: {
+        backgroundColor: "#8A95A5",
+    },
+
+    green: {
+        backgroundColor: "#B9C6AE",
     },
 
     button: {
@@ -135,8 +204,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#757083",
         width: "88%",
         height: 60,
-        borderRadius: 10,
     },
+
     buttonText: {
         fontSize: 16,
         fontWeight: "600",
