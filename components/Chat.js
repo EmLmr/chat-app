@@ -1,5 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { GiftedChat } from 'react-native-gifted-chat';
 
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
@@ -24,15 +25,15 @@ export default class Chat extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     greetings: {
         fontSize: 40,
-        fontWeight: "300",
-        color: "#fff",
-        position: "absolute",
+        fontWeight: '300',
+        color: '#fff',
+        position: 'absolute',
         top: 10,
     },
 });
