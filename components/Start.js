@@ -31,7 +31,7 @@ export default class Start extends React.Component {
         return (
             <ImageBackground style={styles.bgImage} resizeMode="cover" source={background}>
                 <View style={styles.container}>
-                    <Text style={styles.title}>Welcome!</Text>
+                    <Text style={styles.title}>Let's chat!</Text>
                     <View style={styles.mainBox}>
                         {/*where the user inputs their name*/}
                         <View style={styles.usernameBox}>
