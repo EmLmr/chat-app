@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-import { GiftedChat, Bubble, SystemMessage } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, SystemMessage, Day } from 'react-native-gifted-chat';
 
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
@@ -41,6 +41,7 @@ export default class Chat extends React.Component {
         }));
     }
 
+    //customizes the chat bubbles into the specified color
     renderBubble(props) {
         return (
             <Bubble
@@ -59,6 +60,7 @@ export default class Chat extends React.Component {
         );
     }
 
+    //customizes the system message for better readability
     renderSystemMessage(props) {
         return (
             <SystemMessage
@@ -68,6 +70,19 @@ export default class Chat extends React.Component {
                     fontWeight: 'bold',
                     backgroundColor: 'white',
                     padding: 3,
+                }}
+            />
+        );
+    }
+
+    //customizes the date appearing at the top of a recent chat
+    renderDay(props) {
+        return (
+            <Day
+                {...props}
+                textStyle={{
+                    color: 'white',
+                    fontWeight: 'bold',
                 }}
             />
         );
@@ -85,6 +100,7 @@ export default class Chat extends React.Component {
                 <GiftedChat
                     renderBubble={this.renderBubble.bind(this)}
                     renderSystemMessage={this.renderSystemMessage.bind(this)}
+                    renderDay={this.renderDay.bind(this)}
                     messages={this.state.messages}
                     onSend={(messages) => this.onSend(messages)}
                     user={{
