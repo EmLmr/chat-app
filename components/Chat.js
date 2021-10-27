@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat, Bubble, SystemMessage, Day } from 'react-native-gifted-chat';
 
 //the chat component - the main component that will render the UI
@@ -96,7 +96,6 @@ export default class Chat extends React.Component {
 
         return (
             <View style={[styles.container, { backgroundColor: bgColor }]}>
-                {/* <Text style={styles.greetings}>Hi, {name}!</Text> */}
                 <GiftedChat
                     renderBubble={this.renderBubble.bind(this)}
                     renderSystemMessage={this.renderSystemMessage.bind(this)}
@@ -117,15 +116,5 @@ export default class Chat extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center',
     },
-
-    // greetings: {
-    //     fontSize: 40,
-    //     fontWeight: '300',
-    //     color: '#fff',
-    //     position: 'absolute',
-    //     top: 10,
-    // },
 });

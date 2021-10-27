@@ -42,7 +42,6 @@ export default class Start extends React.Component {
                                 value={this.state.name}
                                 placeholder="Please type your name..."
                                 placeholderTextColor="#757083"
-                                // opacity="0.5"
                             />
                         </View>
 
