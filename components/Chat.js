@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 //the chat component - the main component that will render the UI
@@ -51,6 +51,8 @@ export default class Chat extends React.Component {
                         _id: 1,
                     }}
                 />
+                {/* fixes keyborad hiding the message input field for older Android devices */}
+                {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
             </View>
         );
     }
