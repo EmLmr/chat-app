@@ -6,6 +6,33 @@ import { GiftedChat } from 'react-native-gifted-chat';
 export default class Chat extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            messages: [],
+        };
+    }
+
+    componentDidMount() {
+        this.setState({
+            messages: [
+                {
+                    _id: 1,
+                    text: 'Hello developer',
+                    createdAt: new Date(),
+                    user: {
+                        _id: 2,
+                        name: 'React Native',
+                        avatar: 'https://placeimg.com/140/140/any',
+                    },
+                },
+            ],
+        });
+    }
+
+    //saves previously sent messages
+    onSend(messages = []) {
+        this.setState((previousState) => ({
+            messages: GiftedChat.append(previousState.messages, messages),
+        }));
     }
 
     render() {
@@ -16,7 +43,14 @@ export default class Chat extends React.Component {
 
         return (
             <View style={[styles.container, { backgroundColor: bgColor }]}>
-                <Text style={styles.greetings}>Hi, {name}!</Text>
+                {/* <Text style={styles.greetings}>Hi, {name}!</Text> */}
+                <GiftedChat
+                    messages={this.state.messages}
+                    onSend={(messages) => this.onSend(messages)}
+                    user={{
+                        _id: 1,
+                    }}
+                />
             </View>
         );
     }
@@ -25,15 +59,15 @@ export default class Chat extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // justifyContent: 'center',
+        // alignItems: 'center',
     },
 
-    greetings: {
-        fontSize: 40,
-        fontWeight: '300',
-        color: '#fff',
-        position: 'absolute',
-        top: 10,
-    },
+    // greetings: {
+    //     fontSize: 40,
+    //     fontWeight: '300',
+    //     color: '#fff',
+    //     position: 'absolute',
+    //     top: 10,
+    // },
 });
