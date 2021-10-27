@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, SystemMessage } from 'react-native-gifted-chat';
 
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
@@ -59,6 +59,20 @@ export default class Chat extends React.Component {
         );
     }
 
+    renderSystemMessage(props) {
+        return (
+            <SystemMessage
+                {...props}
+                textStyle={{
+                    color: this.props.route.params.backgroundColor,
+                    fontWeight: 'bold',
+                    backgroundColor: 'white',
+                    padding: 3,
+                }}
+            />
+        );
+    }
+
     render() {
         //variable to hold the username and background color, passed as props on the Start screen
         let name = this.props.route.params.name;
@@ -70,6 +84,7 @@ export default class Chat extends React.Component {
                 {/* <Text style={styles.greetings}>Hi, {name}!</Text> */}
                 <GiftedChat
                     renderBubble={this.renderBubble.bind(this)}
+                    renderSystemMessage={this.renderSystemMessage.bind(this)}
                     messages={this.state.messages}
                     onSend={(messages) => this.onSend(messages)}
                     user={{
