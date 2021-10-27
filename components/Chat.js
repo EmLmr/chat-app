@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
@@ -24,6 +24,12 @@ export default class Chat extends React.Component {
                         avatar: 'https://placeimg.com/140/140/any',
                     },
                 },
+                {
+                    _id: 2,
+                    text: `${this.props.route.params.name} has joined the chat!`,
+                    createdAt: new Date(),
+                    system: true,
+                },
             ],
         });
     }
@@ -33,6 +39,22 @@ export default class Chat extends React.Component {
         this.setState((previousState) => ({
             messages: GiftedChat.append(previousState.messages, messages),
         }));
+    }
+
+    renderBubble(props) {
+        return (
+            <Bubble
+                {...props}
+                wrapperStyle={{
+                    right: {
+                        backgroundColor: '#000',
+                    },
+                    left: {
+                        backgroundColor: '#FF5733',
+                    },
+                }}
+            />
+        );
     }
 
     render() {
@@ -45,6 +67,7 @@ export default class Chat extends React.Component {
             <View style={[styles.container, { backgroundColor: bgColor }]}>
                 {/* <Text style={styles.greetings}>Hi, {name}!</Text> */}
                 <GiftedChat
+                    renderBubble={this.renderBubble.bind(this)}
                     messages={this.state.messages}
                     onSend={(messages) => this.onSend(messages)}
                     user={{
