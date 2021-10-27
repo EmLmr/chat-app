@@ -1,14 +1,14 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import "react-native-gesture-handler";
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
 // import react Navigation
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 // import the 2 screen components to navigate
-import Start from "./components/Start";
-import Chat from "./components/Chat";
+import Start from './components/Start';
+import Chat from './components/Chat';
 
 // create the navigator
 const Stack = createStackNavigator();
