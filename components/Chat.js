@@ -6,6 +6,22 @@ import { GiftedChat, Bubble, SystemMessage, Day } from 'react-native-gifted-chat
 const firebase = require('firebase');
 require('firebase/firestore');
 
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: 'AIzaSyB-1b3MtyUoBho9cM3wKkTUcdJVc-OeWxM',
+    authDomain: 'chat-app-cf-41506.firebaseapp.com',
+    projectId: 'chat-app-cf-41506',
+    storageBucket: 'chat-app-cf-41506.appspot.com',
+    messagingSenderId: '100571290233',
+};
+// to connect to Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// reference to messages stored in Firebase
+this.referenceChatMessages = firebase.firestore().collection('messages');
+
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
     constructor(props) {
