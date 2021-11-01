@@ -13,14 +13,8 @@ const firebaseConfig = {
     projectId: 'chat-app-cf-41506',
     storageBucket: 'chat-app-cf-41506.appspot.com',
     messagingSenderId: '100571290233',
+    appId: '1:100571290233:web:5bcd86b8643bcadbd312a8',
 };
-// to connect to Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
-// reference to messages stored in Firebase
-this.referenceChatMessages = firebase.firestore().collection('messages');
 
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
@@ -29,6 +23,14 @@ export default class Chat extends React.Component {
         this.state = {
             messages: [],
         };
+
+        // to connect to Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // reference to messages stored in Firebase
+        this.referenceChatMessages = firebase.firestore().collection('messages');
     }
 
     componentDidMount() {
