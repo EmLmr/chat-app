@@ -2,6 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat, Bubble, SystemMessage, Day } from 'react-native-gifted-chat';
 
+// to be able to use Firebase
+const firebase = require('firebase');
+require('firebase/firestore');
+
 //the chat component - the main component that will render the UI
 export default class Chat extends React.Component {
     constructor(props) {
