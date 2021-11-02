@@ -23,12 +23,17 @@ export default class Chat extends React.Component {
         this.state = {
             messages: [],
             uid: 0,
+            user: {
+                _id: '',
+                name: '',
+            },
             // loggedInText: 'Please wait, you are getting logged in...',
         };
 
         // to connect to Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
+            firebase.firestore().settings({ experimentalForceLongPolling: true });
         }
 
         // reference to messages stored in Firebase
@@ -57,6 +62,15 @@ export default class Chat extends React.Component {
         //     ],
         // });
 
+        this.referenceChatMessages = firebase.firestore().collection('messages');
+        //check that referenceChatMessages is not null or undefined
+        if (this.referenceChatMessages) {
+            this.unsubscribe = this.referenceChatMessages.onSnapshot(this.onCollectionUpdate);
+        } else {
+            (error) => console.log('referenceChatMessages is undefined/null');
+        }
+
+        //create new user if no user is signed in
         this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
             if (!user) {
                 await firebase.auth().signInAnonymously();
@@ -65,6 +79,10 @@ export default class Chat extends React.Component {
             this.setState({
                 uid: user.uid,
                 messages: [],
+                user: {
+                    _id: user.uid,
+                    name: this.props.route.params.name,
+                },
                 // loggedInText: 'Hello there!',
             });
             // create a reference to the active user's messages in Firebase
@@ -76,15 +94,52 @@ export default class Chat extends React.Component {
         });
     }
 
+    //retrieves data from "messages" collection and stores it
+    onCollectionUpdate = (querySnapshot) => {
+        const messages = [];
+        // go through each document
+        querySnapshot.forEach((doc) => {
+            // get the QueryDocumentSnapshot's data
+            var data = doc.data();
+            messages.push({
+                _id: data._id,
+                text: data.text,
+                createdAt: data.createdAt.toDate(),
+                user: data.user,
+            });
+        });
+        this.setState({
+            messages,
+        });
+    };
+
+    // add messages to database
+    addMessage() {
+        const message = this.state.messages[0];
+        this.referenceChatMessages.add({
+            _id: message._id,
+            text: message.text,
+            createdAt: message.createdAt,
+            user: message.user,
+            uid: this.state.uid,
+        });
+    }
+
     componentWillUnmount() {
+        this.unsubscribe();
         this.authUnsubscribe();
     }
 
     //saves previously sent messages
     onSend(messages = []) {
-        this.setState((previousState) => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-        }));
+        this.setState(
+            (previousState) => ({
+                messages: GiftedChat.append(previousState.messages, messages),
+            }),
+            () => {
+                this.addMessage();
+            }
+        );
     }
 
     //customizes the chat bubbles into the specified color
@@ -148,12 +203,13 @@ export default class Chat extends React.Component {
                     renderDay={this.renderDay.bind(this)}
                     messages={this.state.messages}
                     onSend={(messages) => this.onSend(messages)}
-                    user={{
-                        _id: 1,
-                    }}
+                    user={this.state.user}
                 />
+
                 {/* fixes keyborad hiding the message input field for older Android devices */}
+                {/* 
                 {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
+                */}
             </View>
         );
     }
