@@ -13,7 +13,7 @@ const firebaseConfig = {
     projectId: 'chat-app-cf-41506',
     storageBucket: 'chat-app-cf-41506.appspot.com',
     messagingSenderId: '100571290233',
-    appId: '1:100571290233:web:5bcd86b8643bcadbd312a8',
+    appId: '1:100571290233:web:50fe4545a7c9a199d312a8',
 };
 
 //the chat component - the main component that will render the UI
@@ -22,6 +22,8 @@ export default class Chat extends React.Component {
         super(props);
         this.state = {
             messages: [],
+            uid: 0,
+            // loggedInText: 'Please wait, you are getting logged in...',
         };
 
         // to connect to Firebase
@@ -34,26 +36,48 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            messages: [
-                {
-                    _id: 1,
-                    text: 'Hello developer',
-                    createdAt: new Date(),
-                    user: {
-                        _id: 2,
-                        name: 'React Native',
-                        avatar: 'https://placeimg.com/140/140/any',
-                    },
-                },
-                {
-                    _id: 2,
-                    text: `${this.props.route.params.name} has joined the chat!`,
-                    createdAt: new Date(),
-                    system: true,
-                },
-            ],
+        // this.setState({
+        //     messages: [
+        //         {
+        //             _id: 1,
+        //             text: 'Hello developer',
+        //             createdAt: new Date(),
+        //             user: {
+        //                 _id: 2,
+        //                 name: 'React Native',
+        //                 avatar: 'https://placeimg.com/140/140/any',
+        //             },
+        //         },
+        //         {
+        //             _id: 2,
+        //             text: `${this.props.route.params.name} has joined the chat!`,
+        //             createdAt: new Date(),
+        //             system: true,
+        //         },
+        //     ],
+        // });
+
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+            if (!user) {
+                await firebase.auth().signInAnonymously();
+            }
+            //update user state with currently active user data
+            this.setState({
+                uid: user.uid,
+                messages: [],
+                // loggedInText: 'Hello there!',
+            });
+            // create a reference to the active user's messages in Firebase
+            this.referenceChatMessages = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
+
+            this.unsubscribe = this.referenceChatMessages
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(this.onCollectionUpdate);
         });
+    }
+
+    componentWillUnmount() {
+        this.authUnsubscribe();
     }
 
     //saves previously sent messages
