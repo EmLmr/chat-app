@@ -8,6 +8,7 @@ require('firebase/firestore');
 
 // Firebase configuration
 const firebaseConfig = {
+    // databaseURL: 'https://chat-app-cf-41506.firebaseio.com',
     apiKey: 'AIzaSyB-1b3MtyUoBho9cM3wKkTUcdJVc-OeWxM',
     authDomain: 'chat-app-cf-41506.firebaseapp.com',
     projectId: 'chat-app-cf-41506',
@@ -26,6 +27,7 @@ export default class Chat extends React.Component {
             user: {
                 _id: '',
                 name: '',
+                avatar: '',
             },
             // loggedInText: 'Please wait, you are getting logged in...',
         };
@@ -33,11 +35,11 @@ export default class Chat extends React.Component {
         // to connect to Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
-            firebase.firestore().settings({ experimentalForceLongPolling: true });
+            // firebase.firestore().settings({ experimentalForceLongPolling: true });
         }
 
-        // reference to messages stored in Firebase
-        this.referenceChatMessages = firebase.firestore().collection('messages');
+        // // reference to messages stored in Firebase
+        // this.referenceChatMessages = firebase.firestore().collection('messages');
     }
 
     componentDidMount() {
@@ -62,6 +64,10 @@ export default class Chat extends React.Component {
         //     ],
         // });
 
+        let name = this.props.route.params.name;
+        this.props.navigation.setOptions({ title: name });
+
+        // reference to messages stored in Firebase
         this.referenceChatMessages = firebase.firestore().collection('messages');
         //check that referenceChatMessages is not null or undefined
         if (this.referenceChatMessages) {
@@ -81,12 +87,14 @@ export default class Chat extends React.Component {
                 messages: [],
                 user: {
                     _id: user.uid,
-                    name: this.props.route.params.name,
+                    name: name,
+                    avatar: 'https://placeimg.com/140/140/any',
                 },
+                messages: [],
                 // loggedInText: 'Hello there!',
             });
-            // create a reference to the active user's messages in Firebase
-            this.referenceChatMessages = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
+            // // create a reference to the active user's messages in Firebase
+            // this.referenceChatMessages = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
 
             this.unsubscribe = this.referenceChatMessages
                 .orderBy('createdAt', 'desc')
@@ -191,8 +199,7 @@ export default class Chat extends React.Component {
 
     render() {
         //variable to hold the username and background color, passed as props on the Start screen
-        let name = this.props.route.params.name;
-        this.props.navigation.setOptions({ title: name });
+
         let bgColor = this.props.route.params.backgroundColor;
 
         return (
