@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat, Bubble, SystemMessage, Day } from 'react-native-gifted-chat';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // to be able to use Firebase
 const firebase = require('firebase');
@@ -37,9 +38,44 @@ export default class Chat extends React.Component {
         }
     }
 
+    //get messages from local async storage when offline
+    async getMessages() {
+        let messages = '';
+        try {
+            messages = (await AsyncStorage.getItem('messages')) || [];
+            this.setState({
+                messages: JSON.parse(messages),
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    //save messages to local async storage when offline
+    async saveMessages() {
+        try {
+            await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async deleteMessages() {
+        try {
+            await AsyncStorage.removeItem('messages');
+            this.setState({
+                messages: [],
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
     componentDidMount() {
         let name = this.props.route.params.name;
         this.props.navigation.setOptions({ title: name });
+
+        this.getMessages();
 
         // reference to messages stored in Firebase
         this.referenceChatMessages = firebase.firestore().collection('messages');
@@ -119,7 +155,10 @@ export default class Chat extends React.Component {
                 messages: GiftedChat.append(previousState.messages, messages),
             }),
             () => {
+                //save new messages to db
                 this.addMessage();
+                //save new messages to local async storage
+                this.saveMessages();
             }
         );
     }
