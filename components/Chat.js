@@ -8,7 +8,6 @@ require('firebase/firestore');
 
 // Firebase configuration
 const firebaseConfig = {
-    // databaseURL: 'https://chat-app-cf-41506.firebaseio.com',
     apiKey: 'AIzaSyB-1b3MtyUoBho9cM3wKkTUcdJVc-OeWxM',
     authDomain: 'chat-app-cf-41506.firebaseapp.com',
     projectId: 'chat-app-cf-41506',
@@ -35,35 +34,10 @@ export default class Chat extends React.Component {
         // to connect to Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
-            // firebase.firestore().settings({ experimentalForceLongPolling: true });
         }
-
-        // // reference to messages stored in Firebase
-        // this.referenceChatMessages = firebase.firestore().collection('messages');
     }
 
     componentDidMount() {
-        // this.setState({
-        //     messages: [
-        //         {
-        //             _id: 1,
-        //             text: 'Hello developer',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 2,
-        //                 name: 'React Native',
-        //                 avatar: 'https://placeimg.com/140/140/any',
-        //             },
-        //         },
-        //         {
-        //             _id: 2,
-        //             text: `${this.props.route.params.name} has joined the chat!`,
-        //             createdAt: new Date(),
-        //             system: true,
-        //         },
-        //     ],
-        // });
-
         let name = this.props.route.params.name;
         this.props.navigation.setOptions({ title: name });
 
@@ -93,7 +67,7 @@ export default class Chat extends React.Component {
                 messages: [],
                 // loggedInText: 'Hello there!',
             });
-            // // create a reference to the active user's messages in Firebase
+            // // create a reference to the active user's messages in Firebase -- only one user for now so not needed
             // this.referenceChatMessages = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
 
             this.unsubscribe = this.referenceChatMessages
@@ -212,11 +186,8 @@ export default class Chat extends React.Component {
                     onSend={(messages) => this.onSend(messages)}
                     user={this.state.user}
                 />
-
                 {/* fixes keyborad hiding the message input field for older Android devices */}
-                {/* 
                 {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
-                */}
             </View>
         );
     }
