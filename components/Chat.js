@@ -43,39 +43,6 @@ export default class Chat extends React.Component {
         this.referenceUserMessages = null;
     }
 
-    //get messages from local async storage when offline
-    async getMessages() {
-        let messages = '';
-        try {
-            messages = (await AsyncStorage.getItem('messages')) || [];
-            this.setState({
-                messages: JSON.parse(messages),
-            });
-        } catch (error) {
-            console.log(error.message);
-        }
-    }
-
-    //save messages to local async storage when offline
-    async saveMessages() {
-        try {
-            await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
-        } catch (error) {
-            console.log(error.message);
-        }
-    }
-
-    async deleteMessages() {
-        try {
-            await AsyncStorage.removeItem('messages');
-            this.setState({
-                messages: [],
-            });
-        } catch (error) {
-            console.log(error.message);
-        }
-    }
-
     componentDidMount() {
         //variable to hold user's name, passed as props from the Start screen
         const { name } = this.props.route.params;
@@ -124,6 +91,11 @@ export default class Chat extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        this.unsubscribe();
+        this.authUnsubscribe();
+    }
+
     //retrieves data from "messages" collection and stores it
     onCollectionUpdate = (querySnapshot) => {
         const messages = [];
@@ -155,11 +127,6 @@ export default class Chat extends React.Component {
         });
     }
 
-    componentWillUnmount() {
-        this.unsubscribe();
-        this.authUnsubscribe();
-    }
-
     //saves previously sent messages
     onSend(messages = []) {
         this.setState(
@@ -173,6 +140,39 @@ export default class Chat extends React.Component {
                 this.saveMessages();
             }
         );
+    }
+
+    //get messages from local async storage when offline
+    async getMessages() {
+        let messages = '';
+        try {
+            messages = (await AsyncStorage.getItem('messages')) || [];
+            this.setState({
+                messages: JSON.parse(messages),
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    //save messages to local async storage when offline
+    async saveMessages() {
+        try {
+            await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async deleteMessages() {
+        try {
+            await AsyncStorage.removeItem('messages');
+            this.setState({
+                messages: [],
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     //customizes the chat bubbles into the specified color
