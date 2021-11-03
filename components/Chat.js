@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-import { GiftedChat, Bubble, SystemMessage, Day } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, SystemMessage, Day, InputToolbar } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 // to be able to use Firebase
 const firebase = require('firebase');
@@ -32,10 +33,14 @@ export default class Chat extends React.Component {
             // loggedInText: 'Please wait, you are getting logged in...',
         };
 
-        // to connect to Firebase
+        //check that referenceChatMessages is not null or undefined
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
+
+        //reference to messages stored in Firebase
+        this.referenceChatMessages = firebase.firestore().collection('messages');
+        this.referenceUserMessages = null;
     }
 
     //get messages from local async storage when offline
@@ -72,43 +77,50 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount() {
-        let name = this.props.route.params.name;
+        //variable to hold user's name, passed as props from the Start screen
+        const { name } = this.props.route.params;
+        //setting up the screen title
         this.props.navigation.setOptions({ title: name });
 
-        this.getMessages();
+        //check if device is online
+        NetInfo.fetch().then((connection) => {
+            if (connection.isConnected) {
+                this.setState({ isConnected: true });
 
-        // reference to messages stored in Firebase
-        this.referenceChatMessages = firebase.firestore().collection('messages');
-        //check that referenceChatMessages is not null or undefined
-        if (this.referenceChatMessages) {
-            this.unsubscribe = this.referenceChatMessages.onSnapshot(this.onCollectionUpdate);
-        } else {
-            (error) => console.log('referenceChatMessages is undefined/null');
-        }
+                //reference message collection in db
+                this.unsubscribe = this.referenceChatMessages
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot(this.onCollectionUpdate);
 
-        //create new user if no user is signed in
-        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
-            if (!user) {
-                await firebase.auth().signInAnonymously();
+                //create new user if no user is signed in
+                this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+                    if (!user) {
+                        firebase.auth().signInAnonymously();
+                    }
+                    //update user state with currently active user data
+                    this.setState({
+                        uid: user.uid,
+                        messages: [],
+                        user: {
+                            _id: user.uid,
+                            name: name,
+                            avatar: 'https://placeimg.com/140/140/any',
+                        },
+                    });
+
+                    //create a reference to the active user's messages in Firebase
+                    this.referenceUserMessages = firebase
+                        .firestore()
+                        .collection('messages')
+                        .where('uid', '==', this.state.uid);
+                });
+                //saving messages locally to asyncStorage
+                this.saveMessages();
+            } else {
+                this.setState({ isConnected: false });
+                //obtaining messages from asyncStorage
+                this.getMessages();
             }
-            //update user state with currently active user data
-            this.setState({
-                uid: user.uid,
-                messages: [],
-                user: {
-                    _id: user.uid,
-                    name: name,
-                    avatar: 'https://placeimg.com/140/140/any',
-                },
-                messages: [],
-                // loggedInText: 'Hello there!',
-            });
-            // // create a reference to the active user's messages in Firebase -- only one user for now so not needed
-            // this.referenceChatMessages = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
-
-            this.unsubscribe = this.referenceChatMessages
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(this.onCollectionUpdate);
         });
     }
 
@@ -210,9 +222,15 @@ export default class Chat extends React.Component {
         );
     }
 
-    render() {
-        //variable to hold the username and background color, passed as props on the Start screen
+    //hide input toolbar if user is offline
+    renderInputToolbar(props) {
+        if (this.state.isConnected) {
+            return <InputToolbar {...props} />;
+        }
+    }
 
+    render() {
+        //variable to hold background color, passed as props from the Start screen
         let bgColor = this.props.route.params.backgroundColor;
 
         return (
@@ -221,6 +239,7 @@ export default class Chat extends React.Component {
                     renderBubble={this.renderBubble.bind(this)}
                     renderSystemMessage={this.renderSystemMessage.bind(this)}
                     renderDay={this.renderDay.bind(this)}
+                    renderInputToolbar={this.renderInputToolbar.bind(this)}
                     messages={this.state.messages}
                     onSend={(messages) => this.onSend(messages)}
                     user={this.state.user}
