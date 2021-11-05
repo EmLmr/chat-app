@@ -35,13 +35,13 @@ A chat app for mobile devices using React Native. The app provides users with a 
 
 -   To use the app on your mobile device, you will first have to install the Expo Go app, scan the QR code appearing on your terminal or browser.
 -   To use the app on your PC/laptop, pick an option from the left-hand menu. You might have to install an emulator/simulator.
--   The app will start on your device and you'll be able to use it
+-   The app will start on your device and you'll be able to use it.
 
 ### Set Up a Firebase database
 
 To store your messages and media, you will have to set up a [Firestore database](https://firebase.google.com/). Details on how to set up the database can be found in the [Firebase documentation](https://firebase.google.com/docs).
 
-_Note: you will need to setup your own Firebase database and add your own database credentials in /components/Chat.js, between the curly braces of `const firebaseConfig = {YOUR_DATABASE_CREDENTIALS_HERE};` then allow anonymous authorization with your Database.)_
+_Note: you will need to setup your own Firebase database and add your own database credentials in /components/Chat.js, between the curly braces of `const firebaseConfig = {YOUR_DATABASE_CREDENTIALS_HERE};` then allow anonymous authorization with your database.)_
 
 ## Tech Stack
 
