@@ -36,7 +36,6 @@ export default class Chat extends React.Component {
             },
             image: null,
             location: null,
-            // loggedInText: 'Please wait, you are getting logged in...',
         };
 
         //check that referenceChatMessages is not null or undefined
@@ -265,15 +264,6 @@ export default class Chat extends React.Component {
             );
         }
         return null;
-        // //send image property if it is present
-        // if (currentMessage.image) {
-        //     return (
-        //         <Image
-        //             style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
-        //             source={{ uri: currentMessage.image.uri }}
-        //         />
-        //     );
-        // }
     }
 
     render() {
@@ -295,7 +285,7 @@ export default class Chat extends React.Component {
                     user={this.state.user}
                 />
 
-                {/* fixes keyborad hiding the message input field for older Android devices */}
+                {/* fixes keyboard hiding the message input field for older Android devices */}
                 {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
             </View>
         );
