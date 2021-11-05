@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //detect internet connection
 import NetInfo from '@react-native-community/netinfo';
 //share media and location
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import CustomActions from './CustomActions';
 
 // to be able to use Firebase
@@ -260,7 +260,15 @@ export default class Chat extends React.Component {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
-                />
+                >
+                    <Marker
+                        coordinate={{
+                            latitude: currentMessage.location.latitude,
+                            longitude: currentMessage.location.longitude,
+                        }}
+                        title="I'm here!"
+                    />
+                </MapView>
             );
         }
         return null;

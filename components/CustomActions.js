@@ -70,23 +70,24 @@ class CustomActions extends Component {
     };
     //let's user share their location - switch case 2
     getLocation = async () => {
-        try {
-            const locationPermission = await Location.requestForegroundPermissionsAsync();
-            if (locationPermission.granted) {
-                const locationResult = await Location.getCurrentPositionAsync().catch((err) => console.error(err));
-                const longitude = JSON.stringify(locationResult.coords.longitude);
-                const latitude = JSON.stringify(locationResult.coords.latitude);
-                if (locationResult) {
-                    this.props.onSend({
-                        location: {
-                            longitude: longitude,
-                            latitude: latitude,
-                        },
-                    });
-                }
-            }
-        } catch (err) {
-            console.error(err.message);
+        const { granted } = await Location.requestForegroundPermissionsAsync();
+
+        if (!granted) {
+            alert(
+                'You have not given permission to use location services. Please allow permissions in your phones permissions settings.'
+            );
+            return;
+        }
+
+        let currentLocation = await Location.getCurrentPositionAsync().catch((error) => console.log(error));
+
+        if (currentLocation) {
+            this.props.onSend({
+                location: {
+                    latitude: currentLocation.coords.latitude,
+                    longitude: currentLocation.coords.longitude,
+                },
+            });
         }
     };
 
