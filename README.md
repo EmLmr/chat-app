@@ -10,8 +10,8 @@ A chat app for mobile devices using React Native. The app provides users with a 
 -   In the chat room, user can send images and share their location via the "+" button.
 -   Chat data is stored online and offline.
 -   When offline:
--   -   user can see all locally stored content.
--   -   user cannot type or send new content.
+    -   user can see all locally stored content.
+    -   user cannot type or send new content.
 
 ## Getting started
 
