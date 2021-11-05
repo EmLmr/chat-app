@@ -4,8 +4,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import MapView from 'react-native-maps';
-
+import firebase from 'firebase';
+import 'firebase/firestore';
 class CustomActions extends Component {
     //actions available to user
     onActionPress = () => {
@@ -68,7 +68,6 @@ class CustomActions extends Component {
             console.log(error.message);
         }
     };
-
     //let's user share their location - switch case 2
     getLocation = async () => {
         try {
@@ -89,6 +88,37 @@ class CustomActions extends Component {
         } catch (err) {
             console.error(err.message);
         }
+    };
+
+    //upload chosen image to Firebase db
+    uploadImageFetch = async (uri) => {
+        // create a Binary Large OBject (blob) via own XMLHttp request - Ajax request
+        const blob = await new Promise((res, rej) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                res(xhr.response);
+            };
+            xhr.onerror = function (e) {
+                console.log(e);
+                rej(new TypeError('Network request filed!'));
+            };
+            xhr.responseType = 'blob';
+            xhr.open('GET', uri, true);
+            xhr.send(null);
+        });
+
+        const imgNameBefore = uri.split('/');
+        const imgName = imgNameBefore[imgNameBefore.length - 1];
+
+        //create reference to the Firebase storage
+        const ref = firebase.storage().ref().child(`images/${imgName}`);
+        //store the image retrieved from the Ajax request to Firebase storage
+        const snapshot = await ref.put(blob);
+
+        //close conenction
+        blob.close();
+
+        return await snapshot.ref.getDownloadURL();
     };
 
     render() {

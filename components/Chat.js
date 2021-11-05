@@ -34,6 +34,8 @@ export default class Chat extends React.Component {
                 name: '',
                 avatar: '',
             },
+            image: null,
+            location: null,
             // loggedInText: 'Please wait, you are getting logged in...',
         };
 
@@ -106,12 +108,18 @@ export default class Chat extends React.Component {
         // go through each document
         querySnapshot.forEach((doc) => {
             // get the QueryDocumentSnapshot's data
-            var data = doc.data();
+            const data = doc.data();
             messages.push({
                 _id: data._id,
-                text: data.text,
+                text: data.text || '',
                 createdAt: data.createdAt.toDate(),
-                user: data.user,
+                user: {
+                    _id: data.user._id,
+                    name: data.user.name,
+                    avatar: data.user.avatar,
+                },
+                image: data.image || null,
+                location: data.location || null,
             });
         });
         this.setState({
@@ -124,10 +132,12 @@ export default class Chat extends React.Component {
         const message = this.state.messages[0];
         this.referenceChatMessages.add({
             _id: message._id,
-            text: message.text,
+            text: message.text || '',
             createdAt: message.createdAt,
             user: message.user,
             uid: this.state.uid,
+            image: message.image || null,
+            location: message.location || null,
         });
     }
 
@@ -239,6 +249,8 @@ export default class Chat extends React.Component {
 
     renderCustomView(props) {
         const { currentMessage } = props;
+
+        //send location property if it is present
         if (currentMessage.location) {
             return (
                 <MapView
@@ -252,6 +264,16 @@ export default class Chat extends React.Component {
                 />
             );
         }
+        return null;
+        // //send image property if it is present
+        // if (currentMessage.image) {
+        //     return (
+        //         <Image
+        //             style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+        //             source={{ uri: currentMessage.image.uri }}
+        //         />
+        //     );
+        // }
     }
 
     render() {
