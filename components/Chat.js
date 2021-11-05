@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
 import { GiftedChat, Bubble, SystemMessage, Day, InputToolbar } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //detect internet connection
@@ -7,6 +7,8 @@ import NetInfo from '@react-native-community/netinfo';
 //share media and location
 import MapView, { Marker } from 'react-native-maps';
 import CustomActions from './CustomActions';
+
+LogBox.ignoreAllLogs();
 
 // to be able to use Firebase
 const firebase = require('firebase');
