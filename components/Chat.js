@@ -2,7 +2,11 @@ import React from 'react';
 import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat, Bubble, SystemMessage, Day, InputToolbar } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+//detect internet connection
 import NetInfo from '@react-native-community/netinfo';
+//share media and location
+import MapView from 'react-native-maps';
+import CustomActions from './CustomActions';
 
 // to be able to use Firebase
 const firebase = require('firebase');
@@ -229,21 +233,46 @@ export default class Chat extends React.Component {
         }
     }
 
+    renderCustomActions(props) {
+        return <CustomActions {...props} />;
+    }
+
+    renderCustomView(props) {
+        const { currentMessage } = props;
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                />
+            );
+        }
+    }
+
     render() {
         //variable to hold background color, passed as props from the Start screen
         let bgColor = this.props.route.params.backgroundColor;
 
         return (
             <View style={[styles.container, { backgroundColor: bgColor }]}>
+                {/*chat interface*/}
                 <GiftedChat
                     renderBubble={this.renderBubble.bind(this)}
                     renderSystemMessage={this.renderSystemMessage.bind(this)}
                     renderDay={this.renderDay.bind(this)}
                     renderInputToolbar={this.renderInputToolbar.bind(this)}
+                    renderActions={this.renderCustomActions}
+                    renderCustomView={this.renderCustomView}
                     messages={this.state.messages}
                     onSend={(messages) => this.onSend(messages)}
                     user={this.state.user}
                 />
+
                 {/* fixes keyborad hiding the message input field for older Android devices */}
                 {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
             </View>
