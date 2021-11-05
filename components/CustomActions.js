@@ -73,7 +73,9 @@ class CustomActions extends Component {
         const { granted } = await Location.requestForegroundPermissionsAsync();
 
         if (!granted) {
-            alert('No permission to use location services. Please allow permissions in your device settings.');
+            alert(
+                'You have not given permission to use location services. Please allow permissions in your phones permissions settings.'
+            );
             return;
         }
 
